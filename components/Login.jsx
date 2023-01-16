@@ -9,7 +9,7 @@ const Login = () => {
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <div className="flex items-center justify-center">
             <Image
-              src="/../public/assets/sialogo.jpg"
+              src={siaImg}
               alt="/"
               width={90}
               height={90}
@@ -17,9 +17,9 @@ const Login = () => {
           </div>
           <form className="space-y-4 md:space-y-6" action="">
             <div>
-              <label className="block mb-2 text-sm font-medium">Username</label>
+              <label className="block mb-2 text-sm font-semibold">Username</label>
               <input
-                className="block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg"
+                className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
                 id="username"
                 name="username"
                 type="text"
@@ -28,7 +28,7 @@ const Login = () => {
               />
             </div>
             <div>
-              <label for="password" className="block mb-2 text-sm font-medium">
+              <label for="password" className="block mb-2 text-sm font-semibold">
                 Password
               </label>
               <input
@@ -36,7 +36,7 @@ const Login = () => {
                 name="password"
                 id="password"
                 placeholder="Type your password"
-                className="block w-full p-2.5 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg"
+                className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
                 required
               />
             </div>
