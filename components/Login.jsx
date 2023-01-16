@@ -8,16 +8,13 @@ const Login = () => {
       <div className="w-96 bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <div className="flex items-center justify-center">
-            <Image
-              src={siaImg}
-              alt="/"
-              width={90}
-              height={90}
-            />
+            <Image src={siaImg} alt="/" width={90} height={90} />
           </div>
           <form className="space-y-4 md:space-y-6" action="">
             <div>
-              <label className="block mb-2 text-sm font-semibold">Username</label>
+              <label className="block mb-2 text-sm font-semibold">
+                Username
+              </label>
               <input
                 className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
                 id="username"
@@ -28,7 +25,10 @@ const Login = () => {
               />
             </div>
             <div>
-              <label for="password" className="block mb-2 text-sm font-semibold">
+              <label
+                for="password"
+                className="block mb-2 text-sm font-semibold"
+              >
                 Password
               </label>
               <input
@@ -51,7 +51,7 @@ const Login = () => {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="w-32 font-medium rounded-full text-sm px-5 py-2.5 text-center bg-red-600"
+                className="w-32 font-medium rounded-full text-sm px-5 py-2.5 text-center bg-red-600 hover:bg-[#5b1010]"
               >
                 Login
               </button>
