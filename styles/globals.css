@@ -24,6 +24,6 @@
   }
 
   button {
-    @apply shadow-xl shadow-gray-400 rounded-xl text-white;
+    @apply rounded-xl text-white;
   }
 }
