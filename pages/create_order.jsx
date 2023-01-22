@@ -1,7 +1,7 @@
 import React from "react";
 import { Tab } from "@headlessui/react";
 
-const CreateOrder = () => {
+const create_order = () => {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="w-full lg:max-w-5xl bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
@@ -122,7 +122,7 @@ const CreateOrder = () => {
                         <input
                           type="radio"
                           id="option1"
-                          name="options"
+                          name="options2"
                           className="mr-2"
                         />
                         <label for="option1">Split Type</label>
@@ -131,7 +131,7 @@ const CreateOrder = () => {
                         <input
                           type="radio"
                           id="option2"
-                          name="options"
+                          name="options2"
                           className="mr-2"
                         />
                         <label for="option2">Window Air Conditioner</label>
@@ -140,7 +140,7 @@ const CreateOrder = () => {
                         <input
                           type="radio"
                           id="option3"
-                          name="options"
+                          name="options2"
                           className="mr-2"
                         />
                         <label for="option3">N/A</label>
@@ -158,11 +158,11 @@ const CreateOrder = () => {
                 <form action="">
                   <div className="px-28 pb-20">
                     <h2 className="text-lg">PAYMENT OPTIONS</h2>
-                    <div class="flex mt-5">
-                      <button class="bg-gray-500 hover:bg-yellow-500 py-4 px-8 rounded-lg">
+                    <div className="flex mt-5">
+                      <button className="bg-gray-500 hover:bg-yellow-500 py-4 px-8 rounded-lg">
                         Credit/Debit Card
                       </button>
-                      <button class="bg-gray-500 hover:bg-yellow-500 py-4 px-20 rounded-lg ml-4">
+                      <button className="bg-gray-500 hover:bg-yellow-500 py-4 px-20 rounded-lg ml-4">
                         Cash
                       </button>
                     </div>
@@ -177,4 +177,4 @@ const CreateOrder = () => {
   );
 };
 
-export default CreateOrder;
+export default create_order;
