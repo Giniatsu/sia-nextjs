@@ -1,8 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { useAuthentication } from '@/hooks/useAuthentication'
 
 const Navbar = () => {
+  const { logout } = useAuthentication()
+
   return (
     <div className="bg-white px-2 sm:px-4 py-2.5 w-full z-20 top-0 border-b border-gray-200">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -15,6 +18,13 @@ const Navbar = () => {
             className="text-white font-semibold bg-yellow-400 rounded-full px-5 py-2.5 text-center mr-3 md:mr-0"
           >
             Create Order
+          </button>
+          <button
+            type="button"
+            className="text-white font-semibold bg-yellow-400 rounded-full px-5 py-2.5 text-center mr-3 md:mr-0"
+            onClick={() => logout()}
+          >
+            Logout
           </button>
         </div>
         <div className="items-center justify-between w-full md:flex md:w-auto md:order-1">

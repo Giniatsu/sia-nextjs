@@ -83,6 +83,8 @@ const create_order = () => {
                   <div className="px-28 pb-20">
                     <h2 className="text-lg">SERVICE OPTIONS</h2>
                     <div className="flex flex-col">
+                      <input type="date" ></input>
+                      <input type="time"></input>
                       <div className="w-1/2">
                         <input
                           type="radio"

@@ -1,7 +1,9 @@
 import '@/styles/globals.css'
+import React from 'react'
 import Navbar from '@/components/Navbar'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+
 
 export default function App({ Component, pageProps }) {
   // localhost:3000/login -> _document.js -> _app.js -> Component (Login.jsx)
