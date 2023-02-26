@@ -1,7 +1,10 @@
 import React from "react";
 import { Tab } from "@headlessui/react";
 import DataTable from "@/components/DataTable";
+import { useAuthentication } from "@/hooks/useAuthentication";
+import fetch from '@/utils/fetch';
 
+/*
 const sample_data = [
   {
     id: '123123',
@@ -70,9 +73,24 @@ const sample_data = [
     status: 'Active'
   },
 ];
+*/
+
+
 
 const SalesOrder = () => {
-  const [allOrders, setAllOrders] = React.useState(sample_data);
+  const [allOrders, setAllOrders] = React.useState([]);
+  const { tokens } = useAuthentication();
+
+  React.useEffect(() => {
+    if (tokens) {
+      fetch(`/sales_orders/`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`
+        }
+      }).then((res) => res.json()).then((data) => setAllOrders(data))
+    }
+
+  }, [tokens])
 
   const activeOrders = React.useMemo(() => {
     return allOrders.filter((data) => data.status === 'Active');

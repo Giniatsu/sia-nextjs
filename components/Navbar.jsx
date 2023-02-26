@@ -13,12 +13,12 @@ const Navbar = () => {
           <Image src="/../public/sialogo.ico" alt="/" width="50" height="50" />
         </Link>
         <div className="flex md:order-2">
-          <button
-            type="button"
+          <Link
+            href="/create_order"
             className="text-white font-semibold bg-yellow-400 rounded-full px-5 py-2.5 text-center mr-3 md:mr-0"
           >
             Create Order
-          </button>
+          </Link>
           <button
             type="button"
             className="text-white font-semibold bg-yellow-400 rounded-full px-5 py-2.5 text-center mr-3 md:mr-0"
@@ -35,7 +35,7 @@ const Navbar = () => {
               </li>
             </Link>
             <div class="border-r-4 rounded-full border-[#5b1010] mr-2"></div>
-            <Link href="/#">
+            <Link href="/service_order">
               <li className="block py-2 pl-3 pr-4 text-black rounded font-semibold">
                 Service Order
               </li>

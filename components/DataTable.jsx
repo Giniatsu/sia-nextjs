@@ -148,7 +148,7 @@ const DataTable = ({
                   {transaction.id}
                 </th>
                 <td class="px-6 py-4">{transaction.customer}</td>
-                <td class="px-6 py-4">{transaction.date}</td>
+                <td class="px-6 py-4">{transaction.dateOrdered}</td>
                 <td class="px-6 py-4">{transaction.status}</td>
               </tr>
             );

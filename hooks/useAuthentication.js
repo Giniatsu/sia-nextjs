@@ -1,6 +1,7 @@
 import React from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
+import fetch from '@/utils/fetch'
 
 export const useAuthentication = () => {
   // null -> wala pa nacheck ang cookies
@@ -13,7 +14,7 @@ export const useAuthentication = () => {
   const login = async (username, password) => {
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:8000/api/token/', {
+      const res = await fetch('/api/token/', {
         method: 'post',
         headers: {
           'Accept': 'application/json',
