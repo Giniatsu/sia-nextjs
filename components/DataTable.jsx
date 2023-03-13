@@ -1,5 +1,6 @@
 import React from "react";
 import { Tab } from "@headlessui/react";
+import { useRouter } from "next/router";
 
 const DataTable = ({
   data
@@ -7,6 +8,7 @@ const DataTable = ({
   const [currentPage, setCurrentPage] = React.useState(0);
   const [entriesPerPage, setEntriesPerPage] = React.useState(10);
   const [search, setSearch] = React.useState('');
+  const router = useRouter();
 
   const filteredData = React.useMemo(() => {
     return data.filter((entry) => entry.customer.toLowerCase().includes(search.toLowerCase()));
@@ -135,6 +137,9 @@ const DataTable = ({
             <th scope="col" className="px-6 py-3">
               Status
             </th>
+            <th scope="col" className="px-6 py-3">
+              Action
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -150,6 +155,16 @@ const DataTable = ({
                 <td class="px-6 py-4">{transaction.customer}</td>
                 <td class="px-6 py-4">{transaction.dateOrdered}</td>
                 <td class="px-6 py-4">{transaction.status}</td>
+                <td class="px-6 py-4">
+                  <button
+                    class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"
+                    onClick={() => {
+                      router.push(`${router.asPath}/${transaction.id}`)
+                    }}
+                  >
+                    View
+                  </button>
+                </td>
               </tr>
             );
           }) }

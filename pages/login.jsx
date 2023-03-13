@@ -17,16 +17,17 @@ const Login = () => {
     e.preventDefault()
 
     setLoggingIn(true)
-    await login(username, password)
+    const loggedIn = await login(username, password)
 
-    if (tokens) router.push('/sales_order')
+    // CHANGED: fix login na need twice ipress ang button
+    if (loggedIn) router.push('/sales_order')
 
     setLoggingIn(false)
   }
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className="w-96 bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+      <div className="bg-white rounded-lg shadow w-96 md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <div className="flex items-center justify-center">
             <Image src={siaImg} alt="/" width={90} height={90} />
@@ -68,7 +69,7 @@ const Login = () => {
             <div className="flex items-end justify-end">
               <a
                 href="#"
-                className="text-sm font-medium hover:underline text-blue-600"
+                className="text-sm font-medium text-blue-600 hover:underline"
               >
                 Reset Password
               </a>

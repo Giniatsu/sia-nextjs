@@ -34,6 +34,7 @@ const CreateOrder = () => {
   const onSubmitForm = async (e) => {
     e.preventDefault()
 
+    console.log('submitting form')
     const newCustomer = await fetch('/customer_details/', {
       headers: {
         'Authorization': `Bearer ${tokens?.access}`,
@@ -52,17 +53,60 @@ const CreateOrder = () => {
     let newServiceOrder = null;
     let newSalesOrder = null;
 
+    if (serviceChoice !== '') {
+      console.log('creating service order')
+      newServiceOrder = await fetch('/service_orders/', {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({
+          serviceDate: serviceDate,
+          technician_id: technicianId,
+          customer_id: newCustomer.id,
+          service_id: serviceChoice
+        })
+      }).then((res) => res.json())
+    }
+
+    if (product !== '') {
+      console.log('creating sales order')
+      newSalesOrder = await fetch('/sales_orders/', {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({
+          product_id: product,
+          quantity: 1,
+          customer_id: newCustomer.id,
+        })
+      }).then((res) => res.json())
+    }
+
     console.log(newCustomer)
+    console.log(newServiceOrder)
+    console.log(newSalesOrder)
+
+    if (newCustomer && (newServiceOrder || newSalesOrder)) {
+      alert('Order created successfully!')
+    } else {
+      alert('Error creating order!')
+    }
   }
 
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className="w-full lg:max-w-5xl bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
+      <div className="w-full bg-white rounded-lg shadow lg:max-w-5xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <form onSubmit={onSubmitForm}>
             <Tab.Group selectedIndex={selectedTabIndex} onChange={setSelectedTabIndex}>
-              <Tab.List className="flex w-full items-center justify-center">
+              <Tab.List className="flex items-center justify-center w-full">
                 <Tab className="text-black py-1 px-2 lg:px-[74px] font-semibold bg-[#ffe49d] rounded-none">
                   CUSTOMER INFO
                 </Tab>
@@ -140,13 +184,14 @@ const CreateOrder = () => {
                   </div>
                 </Tab.Panel>
                 <Tab.Panel>
-                  <div className="px-28 pb-20">
+                  <div className="pb-20 px-28">
                     <h2 className="text-lg">SERVICE OPTIONS</h2>
                     <div className="flex flex-col">
                       <label for="servicedate">Service Date: </label>
                       <input type="date" id="servicedate" onChange={(e) => setServiceDate(e.target.value)} value={serviceDate}></input>
                       <label for="technician">Technician:</label>
                       <select id="technician" onChange={(e) => setTechnicianId(e.target.value)} value={technicianId}>
+                          <option value="">Select a technician</option>
                         { technicians.map((technician) => (
                           <option key={technician.id} value={technician.id}>{technician.techName}</option>
                         )) }
@@ -166,7 +211,7 @@ const CreateOrder = () => {
                           type="radio"
                           id="option2"
                           name="options"
-                          className="ml-2 my-2"
+                          className="my-2 ml-2"
                           value="House"
                           checked={serviceChoice === 'House'}
                           onChange={(e) => setServiceChoice(e.target.value)}
@@ -188,9 +233,9 @@ const CreateOrder = () => {
                           type="radio"
                           id="option4"
                           name="options"
-                          className="ml-2 my-2"
-                          value="N/A"
-                          checked={serviceChoice === 'N/A'}
+                          className="my-2 ml-2"
+                          value=""
+                          checked={serviceChoice === ''}
                           onChange={(e) => setServiceChoice(e.target.value)}
                         />
                         <label for="option4">N/A</label>
@@ -228,8 +273,8 @@ const CreateOrder = () => {
                           id="option7"
                           name="options7"
                           className="mr-2"
-                          value="N/A"
-                          checked={product === 'N/A'}
+                          value=""
+                          checked={product === ''}
                           onChange={(e) => setProduct(e.target.value)}
                         />
                         <label for="option7">N/A</label>
@@ -243,13 +288,13 @@ const CreateOrder = () => {
                   </div>
                 </Tab.Panel>
                 <Tab.Panel>
-                  <div className="px-28 pb-20">
+                  <div className="pb-20 px-28">
                     <h2 className="text-lg">PAYMENT OPTIONS</h2>
                     <div className="flex mt-5">
-                      <button type="submit" className="bg-gray-500 hover:bg-yellow-500 py-4 px-8 rounded-lg">
+                      <button type="submit" className="px-8 py-4 bg-gray-500 rounded-lg hover:bg-yellow-500">
                         Credit/Debit Card
                       </button>
-                      <button type="submit" className="bg-gray-500 hover:bg-yellow-500 py-4 px-20 rounded-lg ml-4">
+                      <button type="submit" className="px-20 py-4 ml-4 bg-gray-500 rounded-lg hover:bg-yellow-500">
                         Cash
                       </button>
                     </div>
