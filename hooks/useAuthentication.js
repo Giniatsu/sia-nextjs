@@ -13,6 +13,7 @@ export const useAuthentication = () => {
 
   const login = async (username, password) => {
     setLoading(true)
+    let resTokens = null
     try {
       const res = await fetch('/api/token/', {
         method: 'post',
@@ -26,7 +27,7 @@ export const useAuthentication = () => {
         })
       })
 
-      const resTokens = await res.json();
+      resTokens = await res.json();
       if (resTokens) {
         Cookies.set('tokens', JSON.stringify(resTokens))
         setTokens(resTokens)
@@ -36,6 +37,13 @@ export const useAuthentication = () => {
       console.log(err.message)
     }
     setLoading(false)
+
+    // CHANGED: fix login na need twice ipress ang button
+    if (resTokens) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   const logout = () => {
