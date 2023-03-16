@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { useAuthentication } from "@/hooks/useAuthentication";
 import fetch from "@/utils/fetch";
+import { Menu } from '@headlessui/react'
 
 let PHPesos = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -80,17 +81,85 @@ const ServiceOrderDetails = () => {
       });
   }, [id, tokens]);
 
+  const handleDelete = () => {
+    if (!id || !tokens) {
+      return;
+    }
+
+    fetch(`/service_orders/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${tokens?.access}`,
+      },
+    })
+      .then((res) => {
+        router.push('/service_order');
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleStatusUpdate = (status) => {
+    if (!id || !tokens) {
+      return;
+    }
+
+    fetch(`/service_orders/${id}/`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${tokens?.access}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...order,
+        status,
+      }),
+    })
+      .then((res) => {
+        router.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow lg:max-w-5xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="space-y-4 md:space-y-6">
           <div className="container px-4 mx-auto my-2">
             <div className="grid grid-cols-6 m-5">
-              <div className="flex items-center col-span-4">
+              <div className="flex items-center col-span-2">
                 <h4 className="mr-2">Transaction ID#</h4>
                 <p className="">{order?.id}</p>
               </div>
-              <div className="col-span-2 justify-self-end">
+              <div className="col-span-4 justify-self-end">
+                <Menu as="div" className="relative inline-block">
+                  <Menu.Button className="px-3 py-2 mx-2 text-sm bg-blue-700 rounded">
+                    UPDATE STATUS
+                  </Menu.Button>
+                  <Menu.Items as="ul" className="absolute w-56 mt-2 origin-center bg-transparent">
+                    <Menu.Item as="li" className="mb-2">
+                      <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleStatusUpdate('Active')}>
+                        ACTIVE
+                      </button>
+                    </Menu.Item>
+                    <Menu.Item as="li" className="mb-2">
+                      <button className="px-3 py-2 mx-2 text-sm bg-green-600 rounded" onClick={() => handleStatusUpdate('Finished')}>
+                        FINISHED
+                      </button>
+                    </Menu.Item>
+                    <Menu.Item as="li" className="mb-2">
+                      <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleStatusUpdate('Cancelled')}>
+                        CANCELLED
+                      </button>
+                    </Menu.Item>
+                  </Menu.Items>
+                </Menu>
+                <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleDelete()}>
+                  DELETE
+                </button>
                 <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded">
                   PRINT
                 </button>
@@ -104,8 +173,8 @@ const ServiceOrderDetails = () => {
               <div className="flex col-span-3">
                 <div class="border-r-4 rounded-full border-[#5b1010] mr-2"></div>
                 <h4 className="mr-5">Order</h4>
-                <span class="bg-lime-600 text-white text-sm font-medium mr-2 px-2.5 py-1.5 rounded">
-                  ACTIVE
+                <span className={`${order?.status.toUpperCase() === 'ACTIVE' || order?.status.toUpperCase() === 'FINISHED' ? 'bg-lime-600' : 'bg-red-600'} text-white text-sm font-medium mr-2 px-2.5 py-1.5 rounded`}>
+                  {order?.status.toUpperCase()}
                 </span>
               </div>
               <div className="col-span-3 m-0">
@@ -141,7 +210,6 @@ const ServiceOrderDetails = () => {
                     <thead>
                       <tr class="bg-gray-200 text-black text-sm font-bold leading-normal">
                         <th class="py-3 px-6 text-left">Unit</th>
-                        <th class="py-3 px-6 text-left">Quantity</th>
                         <th class="py-3 px-6 text-left">Amount</th>
                       </tr>
                     </thead>
@@ -150,13 +218,11 @@ const ServiceOrderDetails = () => {
                         <td class="py-3 px-6 text-left whitespace-nowrap">
                           {service?.serviceChoice}
                         </td>
-                        <td class="py-3 px-6 text-left whitespace-nowrap">1</td>
                         <td class="py-3 px-6 text-left whitespace-nowrap">
                           {PHPesos.format(service?.estimatedCost)}
                         </td>
                       </tr>
                       <tr class="bg-gray-200 text-black font-bold text-sm leading-normal">
-                        <td class="py-3 px-6 text-left"></td>
                         <td class="py-3 px-6 text-left">Total:</td>
                         <td class="py-3 px-6 text-left whitespace-nowrap">
                           {PHPesos.format(service?.estimatedCost)}

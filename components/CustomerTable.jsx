@@ -2,7 +2,7 @@ import React from "react";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 
-const DataTable = ({
+const CustomerTable = ({
   data
 }) => {
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -11,7 +11,7 @@ const DataTable = ({
   const router = useRouter();
 
   const filteredData = React.useMemo(() => {
-    return data.filter((entry) => entry?.customer?.toLowerCase().includes(search.toLowerCase()));
+    return data.filter((entry) => entry?.customerName?.toLowerCase().includes(search.toLowerCase()));
   }, [data, search]);
 
   const numberOfPages = React.useMemo(() => {
@@ -126,16 +126,16 @@ const DataTable = ({
         <thead className="bg-[#cfcfcf]">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Transaction ID
+              Customer ID
             </th>
             <th scope="col" className="px-6 py-3">
-              Customer
+              Name
             </th>
             <th scope="col" className="px-6 py-3">
-              Date
+              Email
             </th>
             <th scope="col" className="px-6 py-3">
-              Status
+              Contact
             </th>
             <th scope="col" className="px-6 py-3">
               Action
@@ -143,27 +143,23 @@ const DataTable = ({
           </tr>
         </thead>
         <tbody>
-          { paginatedData.map((transaction) => {
+          { paginatedData.map((customer) => {
             return (
-              <tr key={transaction.id}>
+              <tr key={customer.id}>
                 <th
                   scope="row"
                   class="px-6 py-4 font-medium whitespace-nowrap"
                 >
-                  {transaction.id}
+                  {customer.id}
                 </th>
-                <td class="px-6 py-4">{transaction.customer}</td>
-                <td class="px-6 py-4">{transaction.dateOrdered}</td>
-                <td class="px-6 py-4">
-                  <span className={`${transaction.status.toUpperCase() === 'ACTIVE' || transaction.status.toUpperCase() === 'FINISHED' ? 'bg-lime-600' : 'bg-red-600'} text-white text-sm font-medium mr-2 px-2.5 py-1.5 rounded`}>
-                    {transaction.status.toUpperCase()}
-                  </span>
-                </td>
+                <td class="px-6 py-4">{customer.customerName}</td>
+                <td class="px-6 py-4">{customer.customerEmail}</td>
+                <td class="px-6 py-4">{customer.customerContact}</td>
                 <td class="px-6 py-4">
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"
                     onClick={() => {
-                      router.push(`${router.asPath}/${transaction.id}`)
+                      router.push(`${router.asPath}/${customer.id}`)
                     }}
                   >
                     View
@@ -219,4 +215,4 @@ const DataTable = ({
   );
 };
 
-export default DataTable;
+export default CustomerTable;
