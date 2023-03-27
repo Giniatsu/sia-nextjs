@@ -10,7 +10,10 @@ const CreateOrder = () => {
 
   const [serviceDate, setServiceDate] = React.useState('')
   const [technicianId, setTechnicianId] = React.useState('')
-  const [serviceChoice, setServiceChoice] = React.useState('')
+
+  // products should be array of ids
+  const [selectedServices, setSelectedServices] = React.useState([])
+  const [serviceQuantities, setServiceQuantities] = React.useState({})
   
   const [customers, setCustomers] = React.useState([])
   const [technicians, setTechnicians] = React.useState([])
@@ -56,20 +59,63 @@ const CreateOrder = () => {
       },
       method: 'post',
       body: JSON.stringify({
-        serviceDate: serviceDate,
+        service_date: serviceDate,
         technician_id: technicianId,
         customer_id: customerId,
-        service_id: serviceChoice
       })
     }).then((res) => res.json())
-
     console.log(newServiceOrder)
+
+    await Promise.all(selectedServices.map(async (serviceId) => {
+      const newServiceOrderItem = await fetch('/service_order_entries/', {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({
+          service_id: serviceId,
+          order_id: newServiceOrder.id,
+          quantity: serviceQuantities[serviceId]
+        })
+      }).then((res) => res.json())
+      return newServiceOrderItem
+    }))
 
     if (newServiceOrder) {
       router.push(`/service_order/${newServiceOrder.id}`);
     } else {
       alert('Error creating order!')
     }
+  }
+
+  const onCheckService = (e) => {
+    const { checked, name } = e.target
+    const id = name.split('_')[1]
+
+    if (checked) {
+      setSelectedServices((prev) => [...prev, id])
+      setServiceQuantities((prev) => ({
+        ...prev,
+        [id]: 1
+      }))
+    } else {
+      setSelectedServices(selectedServices.filter((service) => service !== id))
+      setServiceQuantities((prev) => ({
+        ...prev,
+        [id]: 0
+      }))
+    }
+  }
+
+  const onQuantityChange = (e) => {
+    const { value, name } = e.target
+
+    setServiceQuantities((prev) => ({
+      ...prev,
+      [name.split('_')[1]]: value
+    }))
   }
 
 
@@ -103,7 +149,7 @@ const CreateOrder = () => {
                       >
                         <option value="">Select Customer</option>
                         {customers.map((customer) => (
-                          <option key={`customer_${customer.id}`} value={customer.id}>{customer.customerName} ({customer.customerEmail})</option>
+                          <option key={`customer_${customer.id}`} value={customer.id}>{customer.customer_name} ({customer.customer_email})</option>
                         ))}
                       </select>
                     </div>
@@ -115,22 +161,36 @@ const CreateOrder = () => {
                       <select id="technician" onChange={(e) => setTechnicianId(e.target.value)} value={technicianId}>
                           <option value="">Select a technician</option>
                         { technicians.map((technician) => (
-                          <option key={technician.id} value={technician.id}>{technician.techName}</option>
+                          <option key={technician.id} value={technician.id}>{technician.tech_name}</option>
                         )) }
                       </select>
                       <div className="w-1/2">
                         {services.map((service) => (
-                          <div key={service.serviceChoice}>
-                            <input
-                              type="radio"
-                              id={service.serviceChoice}
-                              name="options"
-                              className="mr-2"
-                              value={service.serviceChoice}
-                              checked={serviceChoice === service.serviceChoice}
-                              onChange={(e) => setServiceChoice(e.target.value)}
-                            />
-                            <label for={service.id}>{service.serviceChoice}</label>
+                          <div
+                            key={`unit_${service.id}`}
+                          >
+                            <div>
+                              <input
+                                type="checkbox"
+                                id={`option_${service.id}`}
+                                name={`option_${service.id}`}
+                                className="mr-2"
+                                value={service.service_name}
+                                onChange={onCheckService}
+                              />
+                              <label for={`option_${service.id}`}>{service.service_name}</label>
+                            </div>
+                            <div>
+                              <label for={`quantity_${service.id}`}>Quantity: </label>
+                              <input
+                                type="number"
+                                id={`quantity_${service.id}`}
+                                name={`quantity_${service.id}`}
+                                className="mr-2"
+                                value={serviceQuantities[service.id]}
+                                onChange={onQuantityChange}
+                              />
+                            </div>
                           </div>
                         ))}
                       </div>

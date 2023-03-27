@@ -7,7 +7,9 @@ import { useRouter } from "next/router";
 const CreateOrder = () => {
   const router = useRouter();
 
-  const [selectedProduct, setSelectedProduct] = React.useState('')
+  // products should be array of ids
+  const [selectedProducts, setSelectedProducts] = React.useState([])
+  const [productQuantities, setProductQuantities] = React.useState({})
 
   const [customers, setCustomers] = React.useState([])
   const [products, setProducts] = React.useState([])
@@ -29,10 +31,23 @@ const CreateOrder = () => {
         headers: {
           'Authorization': `Bearer ${tokens?.access}`
         }
-      }).then((res) => res.json()).then((data) => setProducts(data))
+      }).then((res) => res.json()).then((data) => {
+        setProducts(data)
+      })
     }
 
   }, [tokens])
+
+  React.useEffect(() => {
+    // set initial product quantities to 0
+    const initialProductQuantities = products.reduce((acc, product) => {
+      acc[product.id] = 0
+      return acc
+    }, {})
+
+    console.log(initialProductQuantities)
+    setProductQuantities(initialProductQuantities)
+  }, [products])
 
   const onSubmitForm = async (e) => {
     e.preventDefault()
@@ -48,19 +63,63 @@ const CreateOrder = () => {
       },
       method: 'post',
       body: JSON.stringify({
-        product_id: selectedProduct,
-        quantity: 1,
         customer_id: customerId,
       })
     }).then((res) => res.json())
-
     console.log(newSalesOrder)
+
+    console.log('creating sales order entries')
+    await Promise.all(selectedProducts.map(async (productId) => {
+      const quantity = productQuantities[productId]
+      const newSalesOrderEntry = await fetch('/sales_order_entries/', {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({
+          order_id: newSalesOrder.id,
+          product_id: productId,
+          quantity
+        })
+      }).then((res) => res.json())
+      return newSalesOrderEntry
+    }))
 
     if (newSalesOrder) {
       router.push(`/sales_order/${newSalesOrder.id}`);
     } else {
       alert('Error creating order!')
     }
+  }
+
+  const onCheckProduct = (e) => {
+    const { checked, name } = e.target
+    const id = name.split('_')[1]
+
+    if (checked) {
+      setSelectedProducts((prev) => [...prev, id])
+      setProductQuantities((prev) => ({
+        ...prev,
+        [id]: 1
+      }))
+    } else {
+      setSelectedProducts(selectedProducts.filter((product) => product !== id))
+      setProductQuantities((prev) => ({
+        ...prev,
+        [id]: 0
+      }))
+    }
+  }
+
+  const onQuantityChange = (e) => {
+    const { value, name } = e.target
+
+    setProductQuantities((prev) => ({
+      ...prev,
+      [name.split('_')[1]]: value
+    }))
   }
 
 
@@ -94,28 +153,42 @@ const CreateOrder = () => {
                       >
                         <option value="">Select Customer</option>
                         {customers.map((customer) => (
-                          <option key={`customer_${customer.id}`} value={customer.id}>{customer.customerName} ({customer.customerEmail})</option>
+                          <option key={`customer_${customer.id}`} value={customer.id}>{customer.customer_name} ({customer.customer_email})</option>
                         ))}
                       </select>
                     </div>
                     <h2 className="text-lg">UNIT OPTIONS</h2>
                     <div className="flex flex-col">
                       {products.map((product) => (
-                        <div key={`unit_${product.unitName}`}>
-                          <input
-                            type="radio"
-                            id={`option${product.unitName}`}
-                            name={`options${product.unitName}`}
-                            className="mr-2"
-                            value={product.unitName}
-                            checked={product.unitName === selectedProduct}
-                            onChange={(e) => setSelectedProduct(e.target.value)}
-                          />
-                          <label for={`option${product.unitName}`}>{product.unitName}</label>
+                        <div
+                          key={`unit_${product.id}`}
+                        >
+                          <div>
+                            <input
+                              type="checkbox"
+                              id={`option_${product.id}`}
+                              name={`option_${product.id}`}
+                              className="mr-2"
+                              value={product.unit_name}
+                              onChange={onCheckProduct}
+                            />
+                            <label for={`option_${product.id}`}>{product.unit_name}</label>
+                          </div>
+                          <div>
+                            <label for={`quantity_${product.id}`}>Quantity: </label>
+                            <input
+                              type="number"
+                              id={`quantity_${product.id}`}
+                              name={`quantity_${product.id}`}
+                              className="mr-2"
+                              value={productQuantities[product.id]}
+                              onChange={onQuantityChange}
+                            />
+                          </div>
                         </div>
                       ))}
                       <div className="text-center">
-                        <button className="w-28 p-2 bg-[#ffbb0e] text-white font-bold rounded-full" onClick={() => setSelectedTabIndex(2)}>
+                        <button type="button" className="w-28 p-2 bg-[#ffbb0e] text-white font-bold rounded-full" onClick={() => setSelectedTabIndex(1)}>
                           NEXT
                         </button>
                       </div>

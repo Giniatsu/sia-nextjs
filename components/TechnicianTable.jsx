@@ -11,7 +11,7 @@ const TechnicianTable = ({
   const router = useRouter();
 
   const filteredData = React.useMemo(() => {
-    return data.filter((entry) => entry?.techName?.toLowerCase().includes(search.toLowerCase()));
+    return data.filter((entry) => entry?.tech_name?.toLowerCase().includes(search.toLowerCase()));
   }, [data, search]);
 
   const numberOfPages = React.useMemo(() => {
@@ -152,9 +152,9 @@ const TechnicianTable = ({
                 >
                   {technician.id}
                 </th>
-                <td class="px-6 py-4">{technician.techName}</td>
-                <td class="px-6 py-4">{technician.techPhone}</td>
-                <td class="px-6 py-4">{technician.techSched}</td>
+                <td class="px-6 py-4">{technician.tech_name}</td>
+                <td class="px-6 py-4">{technician.tech_phone}</td>
+                <td class="px-6 py-4">{technician.tech_sched}</td>
                 <td class="px-6 py-4">
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"

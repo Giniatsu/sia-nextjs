@@ -179,7 +179,7 @@ const SalesOrderDetails = () => {
               <div className="col-span-3 mt-3">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                   <h4 className="">BOOKING DATE</h4>
-                  <p className="">{order?.dateOrdered}</p>
+                  <p className="">{order?.date_ordered}</p>
                   
                   {/*
                   <h4 className="">EXPECTED SHIPMENT DATE</h4>
@@ -190,14 +190,14 @@ const SalesOrderDetails = () => {
               <div className="col-span-3">
                 <div className="grid grid-cols-5">
                   <h3 className="col-span-1">Name</h3>
-                  <p className="col-span-4">{customer?.customerName}</p>
+                  <p className="col-span-4">{customer?.customer_name}</p>
                   <h3 className="col-span-1">Contact</h3>
-                  <p className="col-span-4">{customer?.customerContact}</p>
+                  <p className="col-span-4">{customer?.customer_contact}</p>
                   <h3 className="col-span-1">E-mail</h3>
-                  <p className="col-span-4">{customer?.customerEmail}</p>
+                  <p className="col-span-4">{customer?.customer_email}</p>
                   <h3 className="col-span-1">Address</h3>
                   <p className="col-span-4">
-                    {customer?.customerAddress}
+                    {customer?.customer_address}
                   </p>
                 </div>
               </div>
@@ -207,23 +207,41 @@ const SalesOrderDetails = () => {
                     <thead>
                       <tr class="bg-gray-200 text-black text-sm font-bold leading-normal">
                         <th class="py-3 px-6 text-left">Unit</th>
+                        <th class="py-3 px-6 text-left">Quantity</th>
                         <th class="py-3 px-6 text-left">Amount</th>
+                        <th class="py-3 px-6 text-left">Action</th>
                       </tr>
                     </thead>
                     <tbody class="text-black text-sm font-light">
-                      <tr class="hover:bg-gray-100">
-                        <td class="py-3 px-6 text-left whitespace-nowrap">
-                          {order?.product}
-                        </td>
-                        <td class="py-3 px-6 text-left whitespace-nowrap">
-                          {PHPesos.format(order?.quantity * product?.unitPrice)}
-                        </td>
-                      </tr>
+                      { order?.entries.map((entry) => (
+                        <tr class="hover:bg-gray-100" key={entry.id}>
+                          <td class="py-3 px-6 text-left whitespace-pre-wrap">
+                            {entry?.product} 
+                          </td>
+                          <td class="py-3 px-6 text-left whitespace-nowrap">
+                            {entry?.quantity}
+                          </td>
+                          <td class="py-3 px-6 text-left whitespace-nowrap">
+                            {PHPesos.format(entry?.entry_price)}
+                          </td>
+                          <td class="py-3 px-6 text-left whitespace-nowrap">
+                            <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleEditEntry(entry.id)}>
+                              EDIT
+                            </button>
+                            <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleDeleteEntry(entry.id)}>
+                              DELETE
+                            </button>
+                          </td>
+                        </tr>
+                      )) }
+                      
                       <tr class="bg-gray-200 text-black font-bold text-sm leading-normal">
                         <td class="py-3 px-6 text-left">Total:</td>
+                        <td class="py-3 px-6 text-left"></td>
                         <td class="py-3 px-6 text-left whitespace-nowrap">
-                          {PHPesos.format(order?.quantity * product?.unitPrice)}
+                          {PHPesos.format(order?.total_price)}
                         </td>
+                        <td class="py-3 px-6 text-left"></td>
                       </tr>
                     </tbody>
                   </table>

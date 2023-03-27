@@ -51,6 +51,25 @@ const TechnicianDetails = () => {
     });
   }, [id, tokens]);
 
+  const handleDelete = () => {
+    if (!id || !tokens) {
+      return;
+    }
+
+    fetch(`/technician_details/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${tokens?.access}`,
+      },
+    })
+      .then((res) => {
+        router.push('/technician');
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow lg:max-w-5xl md:mt-0 sm:max-w-md xl:p-0">
@@ -65,6 +84,9 @@ const TechnicianDetails = () => {
                 <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => router.push(`/technician/${id}/edit`)}>
                   EDIT
                 </button>
+                <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleDelete()}>
+                  DELETE
+                </button>
                 <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => router.back()}>
                   BACK
                 </button>
@@ -72,11 +94,11 @@ const TechnicianDetails = () => {
               <div className="col-span-6">
                 <div className="grid grid-cols-5">
                   <h3 className="col-span-1">Name</h3>
-                  <p className="col-span-4">{technician?.techName}</p>
+                  <p className="col-span-4">{technician?.tech_name}</p>
                   <h3 className="col-span-1">Contact</h3>
-                  <p className="col-span-4">{technician?.techPhone}</p>
+                  <p className="col-span-4">{technician?.tech_phone}</p>
                   <h3 className="col-span-1">E-mail</h3>
-                  <p className="col-span-4">{technician?.techEmail}</p>
+                  <p className="col-span-4">{technician?.tech_email}</p>
                   <h3 className="col-span-1">Schedule</h3>
                   <p className="col-span-4">
                     {technician?.techSched}
@@ -101,7 +123,7 @@ const TechnicianDetails = () => {
                       { serviceOrders?.map((service) => (
                         <tr class="hover:bg-gray-100" key={`service_${service.id}`}>
                           <td class="py-3 px-6 text-left whitespace-nowrap">
-                            {service?.service}
+                            {service?.customer} - Order #{service?.id}
                           </td>
                           <td class="py-3 px-6 text-left whitespace-nowrap">
                             <span className={`${service?.status.toUpperCase() === 'ACTIVE' || service?.status.toUpperCase() === 'FINISHED' ? 'bg-lime-600' : 'bg-red-600'} text-white text-sm font-medium mr-2 px-2.5 py-1.5 rounded`}>

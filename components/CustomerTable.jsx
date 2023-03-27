@@ -11,7 +11,7 @@ const CustomerTable = ({
   const router = useRouter();
 
   const filteredData = React.useMemo(() => {
-    return data.filter((entry) => entry?.customerName?.toLowerCase().includes(search.toLowerCase()));
+    return data.filter((entry) => entry?.customer_name?.toLowerCase().includes(search.toLowerCase()));
   }, [data, search]);
 
   const numberOfPages = React.useMemo(() => {
@@ -152,9 +152,9 @@ const CustomerTable = ({
                 >
                   {customer.id}
                 </th>
-                <td class="px-6 py-4">{customer.customerName}</td>
-                <td class="px-6 py-4">{customer.customerEmail}</td>
-                <td class="px-6 py-4">{customer.customerContact}</td>
+                <td class="px-6 py-4">{customer.customer_name}</td>
+                <td class="px-6 py-4">{customer.customer_email}</td>
+                <td class="px-6 py-4">{customer.customer_contact}</td>
                 <td class="px-6 py-4">
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"

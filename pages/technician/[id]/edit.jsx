@@ -28,10 +28,10 @@ const EditTechnician = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setName(data.techName)
-        setContact(data.techPhone)
-        setEmail(data.techEmail)
-        setSchedule(data.techSched)
+        setName(data.tech_name)
+        setContact(data.tech_phone)
+        setEmail(data.tech_email)
+        setSchedule(data.tech_sched)
       })
       .catch((err) => {
         console.error(err);
@@ -50,10 +50,10 @@ const EditTechnician = () => {
       },
       method: 'put',
       body: JSON.stringify({
-        techName: name,
-        techPhone: contact,
-        techEmail: email,
-        techSched: schedule
+        tech_name: name,
+        tech_phone: contact,
+        tech_email: email,
+        tech_sched: schedule
       })
     }).then((res) => res.json())
 

@@ -28,10 +28,10 @@ const EditCustomer = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setName(data.customerName)
-        setContact(data.customerContact)
-        setEmail(data.customerEmail)
-        setAddress(data.customerAddress)
+        setName(data.customer_name)
+        setContact(data.customer_contact)
+        setEmail(data.customer_email)
+        setAddress(data.customer_address)
       })
       .catch((err) => {
         console.error(err);
@@ -50,10 +50,10 @@ const EditCustomer = () => {
       },
       method: 'put',
       body: JSON.stringify({
-        customerName: name,
-        customerContact: contact,
-        customerEmail: email,
-        customerAddress: address
+        customer_name: name,
+        customer_contact: contact,
+        customer_email: email,
+        customer_address: address
       })
     }).then((res) => res.json())
 

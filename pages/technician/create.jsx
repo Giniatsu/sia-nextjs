@@ -25,10 +25,10 @@ const NewTechnician = () => {
       },
       method: 'post',
       body: JSON.stringify({
-        techName: name,
-        techPhone: contact,
-        techEmail: email,
-        techSched: schedule
+        tech_name: name,
+        tech_phone: contact,
+        tech_email: email,
+        tech_sched: schedule
       })
     }).then((res) => res.json())
 

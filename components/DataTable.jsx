@@ -153,7 +153,7 @@ const DataTable = ({
                   {transaction.id}
                 </th>
                 <td class="px-6 py-4">{transaction.customer}</td>
-                <td class="px-6 py-4">{transaction.dateOrdered}</td>
+                <td class="px-6 py-4">{transaction.date_ordered}</td>
                 <td class="px-6 py-4">
                   <span className={`${transaction.status.toUpperCase() === 'ACTIVE' || transaction.status.toUpperCase() === 'FINISHED' ? 'bg-lime-600' : 'bg-red-600'} text-white text-sm font-medium mr-2 px-2.5 py-1.5 rounded`}>
                     {transaction.status.toUpperCase()}
