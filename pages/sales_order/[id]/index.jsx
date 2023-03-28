@@ -163,12 +163,22 @@ const SalesOrderDetails = () => {
       });
   }
 
+  const handlePrint = () => {
+    let printContents = document.getElementById('printable_div').innerHTML;
+    let popupWin = window.open('Print', '_blank', 'top=0,left=0,height=100%,width=auto');
+    popupWin.document.open()
+    popupWin.document.write('<html><head><link href="print.css" rel="stylesheet" type="text/css" media="print"></head><body onload="window.print()">' + printContents + '</html>');
+
+    popupWin.document.close();
+    popupWin.focus();
+  }
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow lg:max-w-5xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="space-y-4 md:space-y-6">
           <div className="container px-4 mx-auto my-2">
-            <div className="grid grid-cols-6 m-5">
+            <div className="grid grid-cols-6 m-5" id="printable_div">
               <div className="flex items-center col-span-2">
                 <h4 className="mr-2">Transaction ID#</h4>
                 <p className="">{order?.id}</p>
@@ -199,7 +209,7 @@ const SalesOrderDetails = () => {
                 <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleDelete()}>
                   DELETE
                 </button>
-                <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded">
+                <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handlePrint()}>
                   PRINT
                 </button>
                 <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleAddEntry()}>
