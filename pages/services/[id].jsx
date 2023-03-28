@@ -10,17 +10,32 @@ const NewService = () => {
   const { tokens } = useAuthentication();
   const router = useRouter();
 
+  const { id } = router.query;
+
+  React.useEffect(() => {
+    if (tokens) {
+      fetch(`/services/${id}/`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`
+        }
+      }).then((res) => res.json()).then((data) => {
+        setName(data.service_name)
+        setCost(data.service_cost)
+      })
+    }
+  }, [id, tokens])
+
   const onSubmitForm = async (e) => {
     e.preventDefault()
 
     console.log('submitting form')
-    const newService = await fetch('/services/', {
+    const newService = await fetch(`/services/${id}/`, {
       headers: {
         'Authorization': `Bearer ${tokens?.access}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'post',
+      method: 'put',
       body: JSON.stringify({
         service_name: name,
         service_cost: cost,
@@ -32,7 +47,7 @@ const NewService = () => {
     if (newService) {
       router.push(`/services`);
     } else {
-      alert('Error creating service!')
+      alert('Error editing service!')
     }
   }
 

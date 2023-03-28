@@ -13,6 +13,8 @@ const NewItem = () => {
   const { tokens } = useAuthentication();
   const router = useRouter();
 
+  const { id } = router.query;
+
   const [unitTypes, setUnitTypes] = React.useState([])
 
   React.useEffect(() => {
@@ -25,17 +27,32 @@ const NewItem = () => {
     }
   }, [tokens])
 
+  React.useEffect(() => {
+    if (tokens) {
+      fetch(`/product_units/${id}/`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`
+        }
+      }).then((res) => res.json()).then((data) => {
+        setName(data.unit_name)
+        setPrice(data.unit_price)
+        setStock(data.unit_stock)
+        setTypeId(data.unit_type_id)
+      })
+    }
+  }, [tokens, id])
+
   const onSubmitForm = async (e) => {
     e.preventDefault()
 
     console.log('submitting form')
-    const newItem = await fetch('/product_units/', {
+    const newItem = await fetch(`/product_units/${id}/`, {
       headers: {
         'Authorization': `Bearer ${tokens?.access}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'post',
+      method: 'put',
       body: JSON.stringify({
         unit_name: name,
         unit_price: price,
@@ -49,7 +66,7 @@ const NewItem = () => {
     if (newItem) {
       router.push(`/items`);
     } else {
-      alert('Error creating item!')
+      alert('Error editing item!')
     }
   }
 

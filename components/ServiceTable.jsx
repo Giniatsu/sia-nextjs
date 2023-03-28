@@ -2,6 +2,7 @@ import React from "react";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
 
+
 const TechnicianTable = ({
   data
 }) => {
@@ -155,6 +156,7 @@ const TechnicianTable = ({
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"
                     onClick={() => {
+                      router.push(`/services/${entry.id}`);
                     }}
                   >
                     Edit
