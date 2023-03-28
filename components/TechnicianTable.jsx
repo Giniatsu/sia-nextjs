@@ -1,6 +1,8 @@
 import React from "react";
 import { Tab } from "@headlessui/react";
 import { useRouter } from "next/router";
+import fetch from "@/utils/fetch";
+import { useAuthentication } from "@/hooks/useAuthentication";
 
 const TechnicianTable = ({
   data
@@ -9,6 +11,7 @@ const TechnicianTable = ({
   const [entriesPerPage, setEntriesPerPage] = React.useState(10);
   const [search, setSearch] = React.useState('');
   const router = useRouter();
+  const { tokens } = useAuthentication();
 
   const filteredData = React.useMemo(() => {
     return data.filter((entry) => entry?.tech_name?.toLowerCase().includes(search.toLowerCase()));
@@ -77,6 +80,20 @@ const TechnicianTable = ({
   const onSearchChange = (event) => {
     setSearch(event.target.value);
   }
+
+  const onDelete = (id) => {
+    // delete data
+    fetch(`/technician_details/${id}/`, {
+      headers: {
+        'Authorization': `Bearer ${tokens?.access}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+    }).then(() => {
+      router.reload();
+    })
+  }
+    
 
   return (
     <>
@@ -163,6 +180,14 @@ const TechnicianTable = ({
                     }}
                   >
                     View
+                  </button>
+                  <button
+                    class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"
+                    onClick={() => {
+                      onDelete(technician.id)
+                    }}
+                  >
+                    Delete
                   </button>
                 </td>
               </tr>
