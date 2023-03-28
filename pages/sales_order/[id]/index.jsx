@@ -109,6 +109,60 @@ const SalesOrderDetails = () => {
       });
   };
 
+  
+  const handleAddEntry = () => {
+    router.push(`/sales_order/${id}/entry`);
+  }
+
+  const [editingIndex, setEditingIndex] = React.useState(null);
+  const [editingValue, setEditingValue] = React.useState(null);
+
+  const handleEditEntry = (index) => {
+    const entry = order?.entries[index];
+    setEditingIndex(index);
+    setEditingValue(entry.quantity);
+  }
+
+  const handleSaveEntry = (index) => {
+    const entry = order?.entries[index];
+
+    fetch(`/sales_order_entries/${entry.id}/`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${tokens?.access}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        product_id: entry.product_id,
+        order_id: entry.order_id,
+        quantity: editingValue,
+      }),
+    })
+      .then((res) => {
+        router.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  const handleDeleteEntry = (index) => {
+    const entry = order?.entries[index];
+
+    fetch(`/sales_order_entries/${entry.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${tokens?.access}`,
+      },
+    })
+      .then((res) => {
+        router.reload();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="w-full bg-white rounded-lg shadow lg:max-w-5xl md:mt-0 sm:max-w-md xl:p-0">
@@ -148,8 +202,8 @@ const SalesOrderDetails = () => {
                 <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded">
                   PRINT
                 </button>
-                <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => { router.back() }}>
-                  BACK
+                <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleAddEntry()}>
+                  ADD ORDER
                 </button>
               </div>
               <div className="col-span-6 mb-3">
@@ -213,22 +267,34 @@ const SalesOrderDetails = () => {
                       </tr>
                     </thead>
                     <tbody class="text-black text-sm font-light">
-                      { order?.entries.map((entry) => (
+                      { order?.entries.map((entry, i) => (
                         <tr class="hover:bg-gray-100" key={entry.id}>
                           <td class="py-3 px-6 text-left whitespace-pre-wrap">
                             {entry?.product} 
                           </td>
+                          { editingIndex === i ? (
+                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                              <input type="number" className="w-full" value={editingValue} onChange={(e) => setEditingValue(e.target.value)} />
+                            </td>
+                          ) : (
+                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                              {entry?.quantity}
+                            </td>
+                          ) }
                           <td class="py-3 px-6 text-left whitespace-nowrap">
-                            {entry?.quantity}
+                            {PHPesos.format(entry?.entry_price * entry?.quantity)}
                           </td>
                           <td class="py-3 px-6 text-left whitespace-nowrap">
-                            {PHPesos.format(entry?.entry_price)}
-                          </td>
-                          <td class="py-3 px-6 text-left whitespace-nowrap">
-                            <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleEditEntry(entry.id)}>
-                              EDIT
-                            </button>
-                            <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleDeleteEntry(entry.id)}>
+                            { editingIndex === i ? (
+                              <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleSaveEntry(i)}>
+                                SAVE
+                              </button>
+                            ) : (
+                              <button className="px-3 py-2 mx-2 text-sm bg-blue-500 rounded" onClick={() => handleEditEntry(i)}>
+                                EDIT
+                              </button>
+                            ) }
+                            <button className="px-3 py-2 mx-2 text-sm bg-red-700 rounded" onClick={() => handleDeleteEntry(i)}>
                               DELETE
                             </button>
                           </td>
