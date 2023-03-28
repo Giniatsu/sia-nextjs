@@ -50,6 +50,18 @@ const Navbar = () => {
                 Technicians
               </li>
             </Link>
+            <div class="border-r-4 rounded-full border-[#5b1010] mr-2"></div>
+            <Link href="/services">
+              <li className={`block py-2 pl-3 pr-4 font-semibold text-black rounded ${router.asPath.includes('/services') && 'underline'}`}>
+                Services
+              </li>
+            </Link>
+            <div class="border-r-4 rounded-full border-[#5b1010] mr-2"></div>
+            <Link href="/items">
+              <li className={`block py-2 pl-3 pr-4 font-semibold text-black rounded ${router.asPath.includes('/items') && 'underline'}`}>
+                Items
+              </li>
+            </Link>
           </ul>
         </div>
       </div>

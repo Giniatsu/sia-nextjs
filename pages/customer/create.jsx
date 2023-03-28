@@ -25,10 +25,10 @@ const NewCustomer = () => {
       },
       method: 'post',
       body: JSON.stringify({
-        customerName: name,
-        customerContact: contact,
-        customerEmail: email,
-        customerAddress: address
+        customer_name: name,
+        customer_contact: contact,
+        customer_email: email,
+        customer_address: address
       })
     }).then((res) => res.json())
 

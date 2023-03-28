@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import fetch from "@/utils/fetch";
 import { useAuthentication } from "@/hooks/useAuthentication";
 
-const CustomerTable = ({
+const TechnicianTable = ({
   data
 }) => {
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -14,7 +14,7 @@ const CustomerTable = ({
   const { tokens } = useAuthentication();
 
   const filteredData = React.useMemo(() => {
-    return data.filter((entry) => entry?.customer_name?.toLowerCase().includes(search.toLowerCase()));
+    return data.filter((entry) => entry?.unit_name?.toLowerCase().includes(search.toLowerCase()));
   }, [data, search]);
 
   const numberOfPages = React.useMemo(() => {
@@ -83,7 +83,7 @@ const CustomerTable = ({
 
   const onDelete = (id) => {
     // delete data
-    fetch(`/customer_details/${id}/`, {
+    fetch(`/product_units/${id}/`, {
       headers: {
         'Authorization': `Bearer ${tokens?.access}`,
         'Content-Type': 'application/json',
@@ -93,6 +93,7 @@ const CustomerTable = ({
       router.reload();
     })
   }
+    
 
   return (
     <>
@@ -142,16 +143,19 @@ const CustomerTable = ({
         <thead className="bg-[#cfcfcf]">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Customer ID
+              Unit ID
             </th>
             <th scope="col" className="px-6 py-3">
               Name
             </th>
             <th scope="col" className="px-6 py-3">
-              Email
+              Price
             </th>
             <th scope="col" className="px-6 py-3">
-              Contact
+              Stock
+            </th>
+            <th scope="col" className="px-6 py-3">
+              Type
             </th>
             <th scope="col" className="px-6 py-3">
               Action
@@ -159,31 +163,32 @@ const CustomerTable = ({
           </tr>
         </thead>
         <tbody>
-          { paginatedData.map((customer) => {
+          { paginatedData.map((entry) => {
             return (
-              <tr key={customer.id}>
+              <tr key={entry.id}>
                 <th
                   scope="row"
                   class="px-6 py-4 font-medium whitespace-nowrap"
                 >
-                  {customer.id}
+                  {entry.id}
                 </th>
-                <td class="px-6 py-4">{customer.customer_name}</td>
-                <td class="px-6 py-4">{customer.customer_email}</td>
-                <td class="px-6 py-4">{customer.customer_contact}</td>
+                <td class="px-6 py-4">{entry.unit_name}</td>
+                <td class="px-6 py-4">{entry.unit_price}</td>
+                <td class="px-6 py-4">{entry.unit_stock}</td>
+                <td class="px-6 py-4">{entry.unit_type}</td>
                 <td class="px-6 py-4">
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"
                     onClick={() => {
-                      router.push(`${router.asPath}/${customer.id}`)
+                      router.push(`/items/${entry.id}`);
                     }}
                   >
-                    View
+                    Edit
                   </button>
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"
                     onClick={() => {
-                      onDelete(customer.id)
+                      onDelete(entry.id);
                     }}
                   >
                     Delete
@@ -239,4 +244,4 @@ const CustomerTable = ({
   );
 };
 
-export default CustomerTable;
+export default TechnicianTable;

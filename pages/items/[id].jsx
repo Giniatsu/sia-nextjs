@@ -4,40 +4,69 @@ import { useAuthentication } from "@/hooks/useAuthentication";
 import fetch from "@/utils/fetch";
 import { useRouter } from "next/router";
 
-const NewTechnician = () => {
+const NewItem = () => {
   const [name, setName] = React.useState('')
-  const [contact, setContact] = React.useState('')
-  const [email, setEmail] = React.useState('')
-  const [schedule, setSchedule] = React.useState('')
+  const [price, setPrice] = React.useState('')
+  const [stock, setStock] = React.useState('')
+  const [typeId, setTypeId] = React.useState('')
   
   const { tokens } = useAuthentication();
   const router = useRouter();
+
+  const { id } = router.query;
+
+  const [unitTypes, setUnitTypes] = React.useState([])
+
+  React.useEffect(() => {
+    if (tokens) {
+      fetch(`/aircon_types/`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`
+        }
+      }).then((res) => res.json()).then((data) => setUnitTypes(data))
+    }
+  }, [tokens])
+
+  React.useEffect(() => {
+    if (tokens) {
+      fetch(`/product_units/${id}/`, {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`
+        }
+      }).then((res) => res.json()).then((data) => {
+        setName(data.unit_name)
+        setPrice(data.unit_price)
+        setStock(data.unit_stock)
+        setTypeId(data.unit_type_id)
+      })
+    }
+  }, [tokens, id])
 
   const onSubmitForm = async (e) => {
     e.preventDefault()
 
     console.log('submitting form')
-    const newTech = await fetch('/technician_details/', {
+    const newItem = await fetch(`/product_units/${id}/`, {
       headers: {
         'Authorization': `Bearer ${tokens?.access}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'post',
+      method: 'put',
       body: JSON.stringify({
-        tech_name: name,
-        tech_phone: contact,
-        tech_email: email,
-        tech_sched: schedule
+        unit_name: name,
+        unit_price: price,
+        unit_stock: stock,
+        unit_type_id: typeId
       })
     }).then((res) => res.json())
 
-    console.log(newTech)
+    console.log(newItem)
 
-    if (newTech) {
-      router.push(`/technician/${newTech.id}`);
+    if (newItem) {
+      router.push(`/items`);
     } else {
-      alert('Error creating customer!')
+      alert('Error editing item!')
     }
   }
 
@@ -56,7 +85,7 @@ const NewTechnician = () => {
                   className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
                   id="name"
                   type="text"
-                  placeholder="Enter technician's name"
+                  placeholder="Enter unit name"
                   onChange={(e) => setName(e.target.value)}
                   value={name}
                   required
@@ -64,29 +93,29 @@ const NewTechnician = () => {
               </div>
               <div className="col-span-3 justify-self-stretch">
                 <label className="block mb-2 text-sm font-semibold">
-                  Contact
+                  Price
                 </label>
                 <input
                   className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="contact"
-                  type="text"
-                  placeholder="Enter technician's contact number"
-                  onChange={(e) => setContact(e.target.value)}
-                  value={contact}
+                  id="price"
+                  type="number"
+                  placeholder="Enter unit price"
+                  onChange={(e) => setPrice(e.target.value)}
+                  value={price}
                   required
                 />
               </div>
               <div className="col-span-3 justify-self-stretch">
                 <label className="block mb-2 text-sm font-semibold">
-                  E-mail
+                  Number of Stock
                 </label>
                 <input
                   className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="email"
-                  type="email"
-                  placeholder="Enter technician's e-mail"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
+                  id="stock"
+                  type="number"
+                  placeholder="Enter stock number"
+                  onChange={(e) => setStock(e.target.value)}
+                  value={stock}
                   required
                 />
               </div>
@@ -94,15 +123,18 @@ const NewTechnician = () => {
                 <label className="block mb-2 text-sm font-semibold">
                   Schedule
                 </label>
-                <input
+                <select
+                  id="type"
                   className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="schedule"
-                  type="text"
-                  placeholder="Enter technician's schedule"
-                  onChange={(e) => setSchedule(e.target.value)}
-                  value={schedule}
+                  onChange={(e) => setTypeId(e.target.value)}
+                  value={typeId}
                   required
-                />
+                >
+                  <option value="">Select a type</option>
+                  { unitTypes.map((type) => (
+                    <option key={type.type_name} value={type.type_name}>{type.type_name}</option>
+                  )) }
+                </select>
               </div>
               <div className="col-span-6">
                 <button type="submit" className="w-28 p-2 bg-[#ffbb0e] text-white font-bold rounded-full">
@@ -117,4 +149,4 @@ const NewTechnician = () => {
   );
 };
 
-export default NewTechnician;
+export default NewItem;

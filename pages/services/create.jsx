@@ -1,14 +1,11 @@
 import React from "react";
-import { Tab } from "@headlessui/react";
 import { useAuthentication } from "@/hooks/useAuthentication";
 import fetch from "@/utils/fetch";
 import { useRouter } from "next/router";
 
-const NewTechnician = () => {
+const NewService = () => {
   const [name, setName] = React.useState('')
-  const [contact, setContact] = React.useState('')
-  const [email, setEmail] = React.useState('')
-  const [schedule, setSchedule] = React.useState('')
+  const [cost, setCost] = React.useState('')
   
   const { tokens } = useAuthentication();
   const router = useRouter();
@@ -17,7 +14,7 @@ const NewTechnician = () => {
     e.preventDefault()
 
     console.log('submitting form')
-    const newTech = await fetch('/technician_details/', {
+    const newService = await fetch('/services/', {
       headers: {
         'Authorization': `Bearer ${tokens?.access}`,
         'Accept': 'application/json',
@@ -25,19 +22,17 @@ const NewTechnician = () => {
       },
       method: 'post',
       body: JSON.stringify({
-        tech_name: name,
-        tech_phone: contact,
-        tech_email: email,
-        tech_sched: schedule
+        service_name: name,
+        service_cost: cost,
       })
     }).then((res) => res.json())
 
-    console.log(newTech)
+    console.log(newService)
 
-    if (newTech) {
-      router.push(`/technician/${newTech.id}`);
+    if (newService) {
+      router.push(`/services`);
     } else {
-      alert('Error creating customer!')
+      alert('Error creating service!')
     }
   }
 
@@ -56,51 +51,23 @@ const NewTechnician = () => {
                   className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
                   id="name"
                   type="text"
-                  placeholder="Enter technician's name"
+                  placeholder="Enter service name"
                   onChange={(e) => setName(e.target.value)}
                   value={name}
                   required
                 />
               </div>
-              <div className="col-span-3 justify-self-stretch">
+              <div className="col-span-4 col-start-2 justify-self-stretch">
                 <label className="block mb-2 text-sm font-semibold">
-                  Contact
+                  Cost
                 </label>
                 <input
                   className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="contact"
-                  type="text"
-                  placeholder="Enter technician's contact number"
-                  onChange={(e) => setContact(e.target.value)}
-                  value={contact}
-                  required
-                />
-              </div>
-              <div className="col-span-3 justify-self-stretch">
-                <label className="block mb-2 text-sm font-semibold">
-                  E-mail
-                </label>
-                <input
-                  className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="email"
-                  type="email"
-                  placeholder="Enter technician's e-mail"
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                  required
-                />
-              </div>
-              <div className="col-span-6 justify-self-stretch">
-                <label className="block mb-2 text-sm font-semibold">
-                  Schedule
-                </label>
-                <input
-                  className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="schedule"
-                  type="text"
-                  placeholder="Enter technician's schedule"
-                  onChange={(e) => setSchedule(e.target.value)}
-                  value={schedule}
+                  id="name"
+                  type="number"
+                  placeholder="Enter service cost"
+                  onChange={(e) => setCost(e.target.value)}
+                  value={cost}
                   required
                 />
               </div>
@@ -117,4 +84,4 @@ const NewTechnician = () => {
   );
 };
 
-export default NewTechnician;
+export default NewService;
