@@ -56,24 +56,8 @@ const CreateOrder = () => {
 
     console.log('submitting form')
     console.log('creating service order')
-    const newServiceOrder = await fetch('/service_orders/', {
-      headers: {
-        'Authorization': `Bearer ${tokens?.access}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'post',
-      body: JSON.stringify({
-        service_date: serviceDate,
-        technician_id: technicianId,
-        customer_id: customerId,
-      })
-    }).then((res) => res.json())
-    console.log(newServiceOrder)
-
-    let totalCost = 0;
-    for await (const serviceId of selectedServices) {
-      const newServiceOrderItem = await fetch('/service_order_entries/', {
+    try {
+      const newServiceOrder = await fetch('/service_orders/', {
         headers: {
           'Authorization': `Bearer ${tokens?.access}`,
           'Accept': 'application/json',
@@ -81,37 +65,59 @@ const CreateOrder = () => {
         },
         method: 'post',
         body: JSON.stringify({
-          service_id: serviceId,
-          order_id: newServiceOrder.id,
-          quantity: serviceQuantities[serviceId]
+          service_date: serviceDate,
+          technician_id: technicianId,
+          customer_id: customerId,
         })
       }).then((res) => res.json())
-
-      totalCost += parseFloat(newServiceOrderItem.entry_price)
-    }
-
-    const isCash = selectedTabIndex === 1;
-    await fetch('/service_order_payments/', {
-      headers: {
-        'Authorization': `Bearer ${tokens?.access}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'post',
-      body: JSON.stringify({
-        order_id: newServiceOrder.id,
-        amount_paid: totalCost,
-        cc_number: isCash ? null : ccNumber,
-        cc_name: isCash ? null : ccName,
-        cc_expiry: isCash ? null : ccExpiry,
-        cc_cvv: isCash ? null : ccCvv,
+      console.log(newServiceOrder)
+  
+      let totalCost = 0;
+      for await (const serviceId of selectedServices) {
+        const newServiceOrderItem = await fetch('/service_order_entries/', {
+          headers: {
+            'Authorization': `Bearer ${tokens?.access}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'post',
+          body: JSON.stringify({
+            service_id: serviceId,
+            order_id: newServiceOrder.id,
+            quantity: serviceQuantities[serviceId]
+          })
+        }).then((res) => res.json())
+  
+        totalCost += parseFloat(newServiceOrderItem.entry_price)
+      }
+  
+      const isCash = selectedTabIndex === 1;
+      await fetch('/service_order_payments/', {
+        headers: {
+          'Authorization': `Bearer ${tokens?.access}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify({
+          order_id: newServiceOrder.id,
+          amount_paid: totalCost,
+          cc_number: isCash ? null : ccNumber,
+          cc_name: isCash ? null : ccName,
+          cc_expiry: isCash ? null : ccExpiry,
+          cc_cvv: isCash ? null : ccCvv,
+        })
       })
-    })
 
-    if (newServiceOrder) {
-      router.push(`/service_order/${newServiceOrder.id}`);
-    } else {
-      alert('Error creating order!')
+      if ('non_field_errors' in newServiceOrder) {
+        alert(newServiceOrder.non_field_errors[0])
+      } else if (newServiceOrder) {
+        router.push(`/service_order/${newServiceOrder.id}`);
+      } else {
+        alert('Error creating order!')
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 
