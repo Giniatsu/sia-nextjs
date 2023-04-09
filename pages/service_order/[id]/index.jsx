@@ -192,7 +192,7 @@ const ServiceOrderDetails = () => {
       <div className="w-full bg-white rounded-lg shadow lg:max-w-5xl md:mt-0 sm:max-w-md xl:p-0">
         <div className="space-y-4 md:space-y-6">
           <div className="container px-4 mx-auto my-2">
-            <div className="grid grid-cols-6 m-5">
+            <div className="grid grid-cols-6 m-5" id="printable_div">
               <div className="flex items-center col-span-2">
                 <h4 className="mr-2">Transaction ID#</h4>
                 <p className="">{order?.id}</p>

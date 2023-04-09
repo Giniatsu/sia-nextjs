@@ -107,7 +107,7 @@ const CreateOrder = () => {
             <div className="pb-20 px-28">
               <h2 className="text-lg">UNIT OPTIONS</h2>
               <div className="flex flex-col">
-                {products.map((product) => (
+                {products.map((product) => product.unit_stock > 0 ? (
                   <div
                     key={`unit_${product.id}`}
                   >
@@ -130,11 +130,13 @@ const CreateOrder = () => {
                         name={`quantity_${product.id}`}
                         className="mr-2"
                         value={productQuantities[product.id]}
+                        max={product.unit_stock}
+                        min={0}
                         onChange={onQuantityChange}
                       />
                     </div>
                   </div>
-                ))}
+                ) : null)}
                 <div className="text-center">
                   <button type="submit" className="w-28 p-2 bg-[#ffbb0e] text-white font-bold rounded-full">
                     SUBMIT

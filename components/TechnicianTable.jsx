@@ -4,6 +4,26 @@ import { useRouter } from "next/router";
 import fetch from "@/utils/fetch";
 import { useAuthentication } from "@/hooks/useAuthentication";
 
+function formatTechSchedule(techScheds) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  let dayTimes = {};
+  techScheds.sort((a, b) => a.tech_sched_day - b.tech_sched_day);
+  techScheds.forEach(sched => {
+    const day = days[sched.tech_sched_day - 1];
+    const timeRange = `${sched.tech_sched_time_start} - ${sched.tech_sched_time_end}`;
+    if (day in dayTimes) {
+      dayTimes[day].push(timeRange);
+    } else {
+      dayTimes[day] = [timeRange];
+    }
+  });
+  let formattedSched = '';
+  for (const day in dayTimes) {
+    formattedSched += `${day} ${dayTimes[day].join(', ')}; `;
+  }
+  return formattedSched.slice(0, -2);
+}
+
 const TechnicianTable = ({
   data
 }) => {
@@ -171,7 +191,7 @@ const TechnicianTable = ({
                 </th>
                 <td class="px-6 py-4">{technician.tech_name}</td>
                 <td class="px-6 py-4">{technician.tech_phone}</td>
-                <td class="px-6 py-4">{technician.tech_sched}</td>
+                <td class="px-6 py-4">{formatTechSchedule(technician.tech_scheds ?? [])}</td>
                 <td class="px-6 py-4">
                   <button
                     class="bg-[#cfcfcf] text-black px-4 py-2 rounded-md text-sm font-medium"

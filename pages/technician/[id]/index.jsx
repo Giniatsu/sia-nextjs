@@ -8,6 +8,26 @@ let PHPesos = new Intl.NumberFormat('en-US', {
   currency: 'PHP',
 });
 
+function formatTechSchedule(techScheds) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  let dayTimes = {};
+  techScheds.sort((a, b) => a.tech_sched_day - b.tech_sched_day);
+  techScheds.forEach(sched => {
+    const day = days[sched.tech_sched_day - 1];
+    const timeRange = `${sched.tech_sched_time_start} - ${sched.tech_sched_time_end}`;
+    if (day in dayTimes) {
+      dayTimes[day].push(timeRange);
+    } else {
+      dayTimes[day] = [timeRange];
+    }
+  });
+  let formattedSched = '';
+  for (const day in dayTimes) {
+    formattedSched += `${day} ${dayTimes[day].join(', ')}; `;
+  }
+  return formattedSched.slice(0, -2);
+}
+
 const TechnicianDetails = () => {
   const router = useRouter();
   const { tokens } = useAuthentication();
@@ -101,7 +121,7 @@ const TechnicianDetails = () => {
                   <p className="col-span-4">{technician?.tech_email}</p>
                   <h3 className="col-span-1">Schedule</h3>
                   <p className="col-span-4">
-                    {technician?.techSched}
+                    {formatTechSchedule(technician?.tech_scheds ?? [])}
                   </p>
                 </div>
               </div>

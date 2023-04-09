@@ -187,7 +187,7 @@ const CreateOrder = () => {
                     </div>
                     <h2 className="text-lg">UNIT OPTIONS</h2>
                     <div className="flex flex-col">
-                      {products.map((product) => (
+                      {products.map((product) => product.unit_stock > 0 ? (
                         <div
                           key={`unit_${product.id}`}
                         >
@@ -208,13 +208,15 @@ const CreateOrder = () => {
                               type="number"
                               id={`quantity_${product.id}`}
                               name={`quantity_${product.id}`}
+                              min={0}
+                              max={product.unit_stock}
                               className="mr-2"
                               value={productQuantities[product.id]}
                               onChange={onQuantityChange}
                             />
                           </div>
                         </div>
-                      ))}
+                      ) : null)}
                       <div className="text-center">
                         <button type="button" className="w-28 p-2 bg-[#ffbb0e] text-white font-bold rounded-full" onClick={() => setSelectedTabIndex(1)}>
                           NEXT
