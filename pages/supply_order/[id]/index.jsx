@@ -42,7 +42,7 @@ const SupplyOrderDetails = () => {
       },
     })
       .then((res) => {
-        router.push('/sales_order');
+        router.push('/supply_order');
       })
       .catch((err) => {
         console.error(err);
