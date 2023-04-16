@@ -62,6 +62,12 @@ const Navbar = () => {
                 Items
               </li>
             </Link>
+            <div class="border-r-4 rounded-full border-[#5b1010] mr-2"></div>
+            <Link href="/supply_order">
+              <li className={`block py-2 pl-3 pr-4 font-semibold text-black rounded ${router.asPath.includes('/supply_order') && 'underline'}`}>
+                Supplies
+              </li>
+            </Link>
           </ul>
         </div>
       </div>
