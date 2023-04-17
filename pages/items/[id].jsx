@@ -116,7 +116,7 @@ const NewItem = () => {
                   placeholder="Enter stock number"
                   onChange={(e) => setStock(e.target.value)}
                   value={stock}
-                  required
+                  readOnly
                 />
               </div>
               <div className="col-span-6 justify-self-stretch">

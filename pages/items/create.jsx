@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 const NewItem = () => {
   const [name, setName] = React.useState('')
   const [price, setPrice] = React.useState('')
-  const [stock, setStock] = React.useState('')
   const [typeId, setTypeId] = React.useState('')
   
   const { tokens } = useAuthentication();
@@ -39,7 +38,7 @@ const NewItem = () => {
       body: JSON.stringify({
         unit_name: name,
         unit_price: price,
-        unit_stock: stock,
+        unit_stock: 0,
         unit_type_id: typeId
       })
     }).then((res) => res.json())
@@ -85,20 +84,6 @@ const NewItem = () => {
                   placeholder="Enter unit price"
                   onChange={(e) => setPrice(e.target.value)}
                   value={price}
-                  required
-                />
-              </div>
-              <div className="col-span-3 justify-self-stretch">
-                <label className="block mb-2 text-sm font-semibold">
-                  Number of Stock
-                </label>
-                <input
-                  className="block w-full p-2.5 drop-shadow-lg sm:text-sm rounded-lg"
-                  id="stock"
-                  type="number"
-                  placeholder="Enter stock number"
-                  onChange={(e) => setStock(e.target.value)}
-                  value={stock}
                   required
                 />
               </div>
