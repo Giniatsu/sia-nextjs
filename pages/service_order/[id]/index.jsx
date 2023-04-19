@@ -295,7 +295,7 @@ const ServiceOrderDetails = () => {
                           ) }
                           
                           <td class="py-3 px-6 text-left whitespace-nowrap">
-                            {PHPesos.format(entry?.entry_price * entry?.quantity)}
+                            {PHPesos.format(entry?.entry_price)}
                           </td>
                           <td class="py-3 px-6 text-left whitespace-nowrap">
                             { editingIndex === i ? (
