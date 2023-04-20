@@ -19,6 +19,20 @@ const CreateOrder = () => {
   const [technicians, setTechnicians] = React.useState([])
   const [services, setServices] = React.useState([])
 
+  const filteredTechnicians = React.useMemo(() => {
+    const date = new Date(serviceDate);
+    const dayOfWeek = date.getDay();
+
+    console.log('dayOfWeek', dayOfWeek)
+    console.log('technicians', technicians)
+
+    return technicians.filter((technician) =>
+      technician.tech_scheds.some(
+        (schedule) => (schedule.tech_sched_day - 1) === dayOfWeek
+      )
+    );
+  }, [technicians, serviceDate]);
+
   const [customerId, setCustomerId] = React.useState('')
 
   const [selectedTabIndex, setSelectedTabIndex] = React.useState(0)
@@ -192,9 +206,9 @@ const CreateOrder = () => {
                       <label for="servicedate">Service Date: </label>
                       <input type="date" id="servicedate" onChange={(e) => setServiceDate(e.target.value)} value={serviceDate}></input>
                       <label for="technician">Technician:</label>
-                      <select id="technician" onChange={(e) => setTechnicianId(e.target.value)} value={technicianId}>
+                      <select id="technician" onChange={(e) => setTechnicianId(e.target.value)} value={technicianId} disabled={!serviceDate}>
                           <option value="">Select a technician</option>
-                        { technicians.map((technician) => (
+                        { filteredTechnicians.map((technician) => (
                           <option key={technician.id} value={technician.id}>{technician.tech_name}</option>
                         )) }
                       </select>
